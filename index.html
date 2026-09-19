@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MSG_BOX</title>
+
+
+    <style>
+
+        /* =========================
+           BASIC RESET
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* =========================
+           BODY
+        ========================= */
+
+        body {
+
+            min-height: 100vh;
+
+            background-color: skyblue;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            font-family: Arial, sans-serif;
+
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        #container {
+
+            width: 90vw;
+
+            max-width: 1100px;
+
+            min-height: 85vh;
+
+            background-color: white;
+
+            border-radius: 8px;
+
+            padding: 40px 50px;
+
+            position: relative;
+
+        }
+
+
+        /* =========================
+           MAIN HEADING
+        ========================= */
+
+        #heading1 {
+
+            text-align: center;
+
+            font-size: clamp(
+                30px,
+                4vw,
+                48px
+            );
+
+            margin-bottom: 70px;
+
+        }
+
+
+        /* =========================
+           TYPE HERE
+        ========================= */
+
+        #heading2 {
+
+            font-size: clamp(
+                24px,
+                3vw,
+                36px
+            );
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* =========================
+           TEXT AREA
+        ========================= */
+
+        #text {
+
+            display: block;
+
+            width: 100%;
+
+            height: 280px;
+
+            border-radius: 10px;
+
+            border: 1px solid #777;
+
+            padding: 15px;
+
+            font-size: 18px;
+
+            resize: vertical;
+
+            outline: none;
+
+        }
+
+
+        #text:focus {
+
+            border: 2px solid #555;
+
+        }
+
+
+        /* =========================
+           BUTTON AREA
+        ========================= */
+
+        .button-area {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 30px;
+
+            padding: 0 10%;
+
+        }
+
+
+        /* =========================
+           SEND BUTTON
+        ========================= */
+
+        #send {
+
+            height: 50px;
+
+            min-width: 90px;
+
+            padding: 0 20px;
+
+            font-size: large;
+
+            background-color: rgb(45, 185, 45);
+
+            border-radius: 8px;
+
+            border: 1px solid #777;
+
+            cursor: pointer;
+
+        }
+
+
+        #send:hover {
+
+            background-color: rgb(35, 165, 35);
+
+        }
+
+
+        /* =========================
+           SEE REPLY BUTTON
+        ========================= */
+
+        #seereply {
+
+            height: 50px;
+
+            min-width: 140px;
+
+            padding: 0 15px;
+
+            border-radius: 8px;
+
+            font-size: larger;
+
+            border: 1px solid #777;
+
+            cursor: pointer;
+
+        }
+
+
+        #seereply:hover {
+
+            background-color: #eeeeee;
+
+        }
+
+
+
+        /* =====================================================
+           FULL SCREEN REPLY PAGE
+        ===================================================== */
+
+        #reply-page {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100vh;
+
+            background-color: #ffffff;
+
+            z-index: 1000;
+
+            overflow-y: auto;
+
+            padding: 30px 20px;
+
+        }
+
+
+        /* =========================
+           REPLY HEADER
+        ========================= */
+
+        #reply-header {
+
+            width: 100%;
+
+            max-width: 850px;
+
+            margin: 0 auto 35px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+            border-bottom: 1px solid #eeeeee;
+
+            padding-bottom: 20px;
+
+        }
+
+
+        #reply-header h1 {
+
+            font-size: 30px;
+
+        }
+
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        #back-button {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 50%;
+
+            border: 1px solid #dddddd;
+
+            background-color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+        }
+
+
+        #back-button:hover {
+
+            background-color: #f2f2f2;
+
+        }
+
+
+        /* =========================
+           REPLY LIST
+        ========================= */
+
+        #reply-list {
+
+            width: 100%;
+
+            max-width: 850px;
+
+            margin: auto;
+
+        }
+
+
+        /* =========================
+           RECEIVED MESSAGE BOX
+        ========================= */
+
+        .reply-box {
+
+            width: 100%;
+
+            background-color: #f8f8f8;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .reply-box-title {
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #7b4fc6;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .reply-message {
+
+            font-size: 17px;
+
+            line-height: 1.6;
+
+            color: #222222;
+
+            white-space: pre-wrap;
+
+            word-wrap: break-word;
+
+        }
+
+
+        .reply-date {
+
+            margin-top: 15px;
+
+            padding-top: 12px;
+
+            border-top: 1px solid #e2e2e2;
+
+            font-size: 12px;
+
+            color: #888888;
+
+        }
+
+
+        /* =========================
+           NO MESSAGES
+        ========================= */
+
+        .no-replies {
+
+            text-align: center;
+
+            padding: 80px 20px;
+
+            color: #888888;
+
+        }
+
+
+        .no-replies-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .no-replies p {
+
+            font-size: 16px;
+
+        }
+
+
+
+        /* =========================
+           MOBILE DESIGN
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+
+                padding: 10px;
+
+                align-items: center;
+
+            }
+
+
+            #container {
+
+                width: 100%;
+
+                min-height: 90vh;
+
+                padding: 30px 18px;
+
+                border-radius: 8px;
+
+            }
+
+
+            #heading1 {
+
+                margin-bottom: 55px;
+
+                font-size: 32px;
+
+            }
+
+
+            #heading2 {
+
+                font-size: 25px;
+
+                margin-bottom: 18px;
+
+            }
+
+
+            #text {
+
+                height: 250px;
+
+                font-size: 16px;
+
+            }
+
+
+            .button-area {
+
+                padding: 0;
+
+                margin-top: 25px;
+
+                gap: 15px;
+
+            }
+
+
+            #send,
+            #seereply {
+
+                width: 50%;
+
+                min-width: 0;
+
+                height: 48px;
+
+                font-size: 15px;
+
+            }
+
+
+            /* Reply page */
+
+            #reply-page {
+
+                padding: 20px 14px;
+
+            }
+
+
+            #reply-header {
+
+                margin-bottom: 25px;
+
+                gap: 12px;
+
+            }
+
+
+            #reply-header h1 {
+
+                font-size: 22px;
+
+            }
+
+
+            #back-button {
+
+                width: 40px;
+
+                height: 40px;
+
+                font-size: 22px;
+
+            }
+
+
+            .reply-box {
+
+                padding: 17px;
+
+                border-radius: 14px;
+
+            }
+
+
+            .reply-message {
+
+                font-size: 15px;
+
+            }
+
+
+            .reply-date {
+
+                font-size: 11px;
+
+            }
+
+        }
+
+
+        /* =========================
+           VERY SMALL PHONES
+        ========================= */
+
+        @media (max-width: 360px) {
+
+            #heading1 {
+
+                font-size: 28px;
+
+            }
+
+
+            #heading2 {
+
+                font-size: 22px;
+
+            }
+
+
+            #text {
+
+                height: 220px;
+
+            }
+
+
+            .button-area {
+
+                flex-direction: column;
+
+            }
+
+
+            #send,
+            #seereply {
+
+                width: 100%;
+
+            }
+
+        }
+
+    
+        /* =========================
+           LOGIN SCREEN
+        ========================= */
+
+        #login-page {
+            position: fixed;
+            inset: 0;
+            background-color: skyblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 5000;
+        }
+
+        #login-box {
+            width: 90vw;
+            max-width: 420px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        #login-box h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #login-name,
+        #login-password {
+            width: 100%;
+            height: 48px;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #login-button {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #777;
+            border-radius: 8px;
+            background-color: rgb(45, 185, 45);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        #login-button:hover {
+            background-color: rgb(35, 165, 35);
+        }
+
+        #login-error {
+            min-height: 20px;
+            margin-top: 12px;
+            text-align: center;
+            color: #d00000;
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         LOGIN PAGE
+    ===================================================== -->
+
+    <div id="login-page">
+
+        <div id="login-box">
+
+            <h1>🔐 MSG_BOX</h1>
+
+            <input
+                type="text"
+                id="login-name"
+                placeholder="Name"
+                autocomplete="username"
+            >
+
+            <input
+                type="password"
+                id="login-password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button id="login-button">
+                LOGIN
+            </button>
+
+            <p id="login-error"></p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN MESSAGE PAGE
+    ===================================================== -->
+
+    <div id="container">
+
+
+        <h1 id="heading1">
+            MSG_BOX
+        </h1>
+
+
+        <h1 id="heading2">
+            TYPE HERE 📬
+        </h1>
+
+
+        <textarea
+            id="text"
+            placeholder="Type your message here..."
+        ></textarea>
+
+
+        <div class="button-area">
+
+            <button id="seereply">
+                📥 See Reply
+            </button>
+
+
+            <button id="send">
+                SEND
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FULL SCREEN RECEIVED MESSAGES PAGE
+    ===================================================== -->
+
+    <div id="reply-page">
+
+
+        <div id="reply-header">
+
+            <button id="back-button">
+                ←
+            </button>
+
+
+            <h1>
+                📥 RECIVED MESSAGES
+            </h1>
+
+        </div>
+
+
+        <div id="reply-list">
+
+            <!-- Messages will appear here -->
+
+        </div>
+
+
+    </div>
+
+
+
+    <script type="module">
+
+        /* =====================================================
+           FIREBASE IMPORTS
+        ===================================================== */
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            orderBy,
+            serverTimestamp
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+        /* =====================================================
+           FIREBASE CONFIG
+        ===================================================== */
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyC6CFweFliztTt52VMWhqQuhbzkCVFvbA",
+
+            authDomain: "msg-box-27906.firebaseapp.com",
+
+            projectId: "msg-box-27906",
+
+            storageBucket: "msg-box-27906.firebasestorage.app",
+
+            messagingSenderId: "901023460700",
+
+            appId: "1:901023460700:web:78a317870c47f11f7d6599",
+
+            measurementId: "G-T9HV7FSPM0"
+
+        };
+
+
+        /* =====================================================
+           START FIREBASE
+        ===================================================== */
+
+        const app =
+            initializeApp(firebaseConfig);
+
+        const db =
+            getFirestore(app);
+
+
+        /* =====================================================
+           TWO USERS
+
+           CHANGE ONLY THE PASSWORDS.
+        ===================================================== */
+
+        const USERS = {
+
+            yogitha: {
+                password: "YOGITHA_PASSWORD",
+                role: "her"
+            },
+
+            you: {
+                password: "YOUR_PASSWORD",
+                role: "you"
+            }
+
+        };
+
+
+        let currentUser = null;
+
+
+        /* =====================================================
+           LOGIN ELEMENTS
+        ===================================================== */
+
+        const loginPage =
+            document.getElementById("login-page");
+
+        const loginName =
+            document.getElementById("login-name");
+
+        const loginPassword =
+            document.getElementById("login-password");
+
+        const loginButton =
+            document.getElementById("login-button");
+
+        const loginError =
+            document.getElementById("login-error");
+
+
+        /* =====================================================
+           LOGIN
+        ===================================================== */
+
+        loginButton.addEventListener(
+            "click",
+            login
+        );
+
+
+        loginPassword.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Enter") {
+                    login();
+                }
+
+            }
+        );
+
+
+        function login() {
+
+            const name =
+                loginName.value.trim().toLowerCase();
+
+            const password =
+                loginPassword.value;
+
+
+            if (
+                USERS[name] &&
+                USERS[name].password === password
+            ) {
+
+                currentUser =
+                    USERS[name];
+
+                loginPage.style.display =
+                    "none";
+
+                document.body.style.overflow =
+                    "auto";
+
+                loginError.textContent = "";
+
+                loginName.value = "";
+                loginPassword.value = "";
+
+            }
+            else {
+
+                loginError.textContent =
+                    "Incorrect name or password.";
+
+            }
+
+        }
+
+
+        /* =====================================================
+           GET MAIN PAGE ELEMENTS
+        ===================================================== */
+
+        let send =
+            document.getElementById("send");
+
+        let seeReply =
+            document.getElementById("seereply");
+
+        let text =
+            document.getElementById("text");
+
+        let replyPage =
+            document.getElementById("reply-page");
+
+        let backButton =
+            document.getElementById("back-button");
+
+        let replyList =
+            document.getElementById("reply-list");
+
+
+        /* =====================================================
+           SEND MESSAGE
+        ===================================================== */
+
+        send.addEventListener(
+            "click",
+            async function () {
+
+                if (!currentUser) {
+                    return;
+                }
+
+
+                let message =
+                    text.value.trim();
+
+
+                if (message === "") {
+
+                    alert(
+                        "Please type something first."
+                    );
+
+                    return;
+
+                }
+
+
+                try {
+
+                    await addDoc(
+                        collection(db, "messages"),
+                        {
+
+                            message: message,
+
+                            sender:
+                                currentUser.role,
+
+                            receiver:
+                                currentUser.role === "you"
+                                    ? "her"
+                                    : "you",
+
+                            date:
+                                new Date().toLocaleString(),
+
+                            createdAt:
+                                serverTimestamp()
+
+                        }
+                    );
+
+
+                    alert(
+                        "Message sent!"
+                    );
+
+
+                    text.value = "";
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Firebase error:",
+                        error
+                    );
+
+                    alert(
+                        "Message could not be sent."
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           SEE REPLY
+        ===================================================== */
+
+        seeReply.addEventListener(
+            "click",
+            async function () {
+
+                if (!currentUser) {
+                    return;
+                }
+
+                await showReplies();
+
+            }
+        );
+
+
+        /* =====================================================
+           SHOW ONLY MESSAGES SENT TO CURRENT USER
+        ===================================================== */
+
+        async function showReplies() {
+
+            replyPage.style.display =
+                "block";
+
+            document.body.style.overflow =
+                "hidden";
+
+
+            replyList.innerHTML = `
+
+                <div class="no-replies">
+
+                    <div class="no-replies-icon">
+                        ⏳
+                    </div>
+
+                    <p>
+                        Loading messages...
+                    </p>
+
+                </div>
+
+            `;
+
+
+            try {
+
+                const messagesQuery =
+                    query(
+                        collection(db, "messages"),
+                        orderBy(
+                            "createdAt",
+                            "desc"
+                        )
+                    );
+
+
+                const querySnapshot =
+                    await getDocs(
+                        messagesQuery
+                    );
+
+
+                replyList.innerHTML =
+                    "";
+
+
+                let receivedCount = 0;
+
+
+                querySnapshot.forEach(
+                    function (doc) {
+
+                        let reply =
+                            doc.data();
+
+
+                        /* Only show messages addressed
+                           to the logged-in user. */
+
+                        if (
+                            reply.receiver !==
+                            currentUser.role
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        receivedCount++;
+
+
+                        let replyBox =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        replyBox.className =
+                            "reply-box";
+
+
+                        let title =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        title.className =
+                            "reply-box-title";
+
+
+                        title.textContent =
+                            "RECIVED";
+
+
+                        let message =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        message.className =
+                            "reply-message";
+
+
+                        message.textContent =
+                            reply.message;
+
+
+                        let date =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        date.className =
+                            "reply-date";
+
+
+                        date.textContent =
+                            reply.date;
+
+
+                        replyBox.appendChild(
+                            title
+                        );
+
+                        replyBox.appendChild(
+                            message
+                        );
+
+                        replyBox.appendChild(
+                            date
+                        );
+
+
+                        replyList.appendChild(
+                            replyBox
+                        );
+
+                    }
+                );
+
+
+                if (receivedCount === 0) {
+
+                    replyList.innerHTML = `
+
+                        <div class="no-replies">
+
+                            <div class="no-replies-icon">
+                                📭
+                            </div>
+
+                            <p>
+                                No messages received yet.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Firebase error:",
+                    error
+                );
+
+
+                replyList.innerHTML = `
+
+                    <div class="no-replies">
+
+                        <div class="no-replies-icon">
+                            ⚠️
+                        </div>
+
+                        <p>
+                            Could not load messages.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           BACK BUTTON
+        ===================================================== */
+
+        backButton.addEventListener(
+            "click",
+            function () {
+
+                replyPage.style.display =
+                    "none";
+
+                document.body.style.overflow =
+                    "auto";
+
+            }
+        );
+
+</script>
+
+
+</body>
+
+</html>
